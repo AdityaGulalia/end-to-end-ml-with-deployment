@@ -1,75 +1,146 @@
-Adult Income Classification
-End-to-End Machine Learning System
-Project Summary
+# Adult Income Classification  
+### Production-Structured End-to-End Machine Learning System
 
-Designed and implemented a modular end-to-end machine learning system to predict whether an individual's annual income exceeds $50K using the Adult Census dataset (UCI Machine Learning Repository).
+---
 
-The project focuses on production-style ML architecture, reproducibility, and scalable system design rather than notebook-based experimentation.
+## Overview
 
-Key Contributions
+This project implements a modular, production-aligned machine learning system to predict whether an individual earns more than \$50,000 annually using real U.S. Census data from the UCI Machine Learning Repository.
 
-Architected a layered ML system with clear separation between configuration, data ingestion, preprocessing, modeling, evaluation, and inference.
+The objective of this repository is to demonstrate structured ML system design — emphasizing architectural clarity, reproducibility, and separation of concerns across the full ML lifecycle.
 
-Implemented a leakage-safe preprocessing pipeline using scikit-learn’s Pipeline and ColumnTransformer.
+---
 
-Engineered automated handling of missing categorical values and structured numerical transformations.
+## Dataset
 
-Designed interchangeable model abstraction supporting Logistic Regression, Decision Tree, and Random Forest.
+**Adult Census Income Dataset**  
+UCI Machine Learning Repository  
+https://archive.ics.uci.edu/ml/datasets/adult  
 
-Built a reproducible training workflow with configuration-driven experimentation.
+- ~48,000 records  
+- Mixed categorical and numerical features  
+- Missing values encoded as `"?"`  
+- Moderate class imbalance  
+- Real census-derived demographic data  
 
-Developed a modular inference layer capable of consuming structured input and returning probability outputs.
+---
 
-Technical Stack
+## Problem Statement
 
-Python
+Develop a supervised classification system capable of estimating the probability that an individual earns more than \$50K annually based on structured demographic attributes.
 
-pandas
+The system is designed to:
 
-NumPy
+- Prevent data leakage  
+- Enforce consistent preprocessing  
+- Support interchangeable models  
+- Maintain strict modular separation  
+- Remain extensible for future production integration  
 
-scikit-learn
+---
 
-Matplotlib / Seaborn
+## Architecture
 
-ML Techniques Applied
+The project follows a layered, single-responsibility design:
 
-Binary classification
+```
+src/
+├── config.py        # Central configuration
+├── data_loader.py   # Data ingestion
+├── preprocess.py    # Transformation pipelines
+├── model.py         # Model abstraction
+├── train.py         # Training orchestration
+├── evaluate.py      # Performance evaluation
+├── predict.py       # Inference interface
+└── utils.py         # Shared utilities
 
-Feature encoding (One-Hot Encoding)
+main.py              # System entry point
+```
 
-Numerical scaling (StandardScaler)
+Data flows deterministically through the system:
 
-Missing value imputation
+```
+CONFIG → DATA → PREPROCESS → MODEL → TRAIN → EVALUATE → SAVE → PREDICT
+```
 
-Train-test stratified splitting
+Each module returns explicit outputs consumed by the next stage, ensuring traceable and predictable behavior.
 
-Pipeline-based transformation enforcement
+---
 
-Model comparison
+## Processing Strategy
 
-ROC-AUC evaluation
+All transformations are encapsulated within a scikit-learn `Pipeline` using `ColumnTransformer`.
 
-Architectural Highlights
+**Numerical Features**
+- Median imputation  
+- Standard scaling  
 
-Single-responsibility module design
+**Categorical Features**
+- Mode imputation  
+- One-hot encoding with unknown-category handling  
 
-Deterministic data flow between layers
+This guarantees identical behavior during training and inference while eliminating leakage risk.
 
-Configuration-driven model selection
+---
 
-Encapsulated preprocessing logic
+## Models Implemented
 
-Clear separation between training and inference workflows
+- Logistic Regression  
+- Decision Tree  
+- Random Forest  
 
-Dataset
+Model selection is configuration-driven and does not require structural modification of the training pipeline.
 
-Adult Census Income Dataset
-UCI Machine Learning Repository
-https://archive.ics.uci.edu/ml/datasets/adult
+---
 
-~48,000 records | Mixed categorical & numerical features | Real census data
+## Evaluation Metrics
 
-Outcome
+- Accuracy  
+- Precision  
+- Recall  
+- F1 Score  
+- ROC-AUC  
 
-Delivered a structured, extensible ML codebase demonstrating production-aligned engineering practices suitable for integration into future API-based deployment systems.
+Evaluation is decoupled from training to preserve architectural integrity.
+
+---
+
+## Technical Stack
+
+- Python  
+- pandas  
+- NumPy  
+- scikit-learn  
+- Matplotlib  
+- Seaborn  
+
+---
+
+## Design Principles Applied
+
+- Single Responsibility Principle  
+- Configuration-driven experimentation  
+- Encapsulated preprocessing logic  
+- Clear training vs inference separation  
+- Modular, extensible architecture  
+- Deterministic data flow  
+
+---
+
+## Future Scope
+
+The system is structured to support:
+
+- Hyperparameter optimization  
+- Threshold tuning  
+- Feature importance analysis  
+- API integration  
+- Containerized deployment  
+
+Deployment will be implemented in a future phase.
+
+---
+
+## Summary
+
+This repository demonstrates the transition from notebook-centric experimentation to production-oriented machine learning system design. It reflects engineering discipline, modular architecture, and scalable ML implementation practices.
